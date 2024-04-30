@@ -221,6 +221,6 @@ def extract_text(pdf_path):
     texts = []
     for page_number in range(0, num_pages):
         page = reader.getPage(page_number)
-        pages[page_number] = f"\nPage {page_number}\n" + page.extractText()
+        pages[page_number] = f"\nPage {page_number + 1}\n" + page.extractText()
         texts.append(pages[page_number])
     return "\n".join(texts)

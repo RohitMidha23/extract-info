@@ -19,6 +19,8 @@ To run:
 uvicorn server.app:app --host 0.0.0.0 --port 8000 --reload
 ```
 
+Navigate to `127.0.0.1:8000` on your browser!
+
 ## Brief Process
 
 Step 1. OCR is used at first to be able to create some readable text. This is a very important step, as most scanned documents might not contain text in the normal form that is parseable by simple PDF Parsers.
