@@ -1,10 +1,11 @@
 import tempfile
-
+import os
 from typing import Optional, Dict, Any
 
 from fastapi import APIRouter, File, Form, HTTPException, UploadFile
 from server.extract_info import ExtractResponse, extract_from_pdf
 from server.models import DEFAULT_MODEL
+from server.constants import TEMP_DIR
 
 router = APIRouter(
     prefix="/extract",
@@ -26,15 +27,11 @@ async def extract(
     if file is None:
         raise HTTPException(status_code=422, detail="No PDF file provided.")
     # Save the uploaded file to a temporary file
-    temp_path = "temp.pdf"
+    temp_path = os.path.join(TEMP_DIR, "temp.pdf")
     with open(temp_path, "wb") as temp:
         contents = await file.read()
         temp.write(contents)
 
-    # with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as temp:
-    #     contents = await file.read()  # read the entire file
-    #     temp.write(contents)
-    #     temp_path = temp.name
     print(temp_path)
     return await extract_from_pdf(
         file=temp_path, model_name=model_name, json_schema=json_schema

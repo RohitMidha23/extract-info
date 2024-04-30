@@ -190,6 +190,10 @@ class HocrParser:
 
 
 def perform_ocr(pdf_path, output_pdf_path):
+    """
+    Perform OCR on a PDF file using DocTR.
+    Can be time consuming but accurate.
+    """
     model = ocr_predictor("db_resnet50", "parseq", pretrained=True)
     doc = DocumentFile.from_pdf(
         pdf_path,
@@ -217,6 +221,6 @@ def extract_text(pdf_path):
     texts = []
     for page_number in range(0, num_pages):
         page = reader.getPage(page_number)
-        pages[page_number] = f"\nPage {page_number}\n" + page.extract_text()
+        pages[page_number] = f"\nPage {page_number}\n" + page.extractText()
         texts.append(pages[page_number])
     return "\n".join(texts)

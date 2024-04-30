@@ -4,6 +4,9 @@ from dotenv import load_dotenv
 load_dotenv()
 
 TEMP_DIR = "./tmp/"
+os.makedirs(
+    TEMP_DIR, exist_ok=True
+)  # Create the temporary directory if it doesn't exist
 
 REPLICATE_API_TOKEN = os.getenv("REPLICATE_API_TOKEN")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")

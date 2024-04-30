@@ -1,5 +1,6 @@
 from typing import Any, Dict, Optional, List
 from uuid import uuid4
+import os
 
 
 from fastapi import HTTPException
@@ -11,9 +12,9 @@ from langserve import CustomUserType
 from pydantic import BaseModel, Field, validator
 
 from server.models import get_model, DEFAULT_MODEL
-from server.pdf_utils import extract_text, perform_ocr
+from server.doctr_utils import perform_ocr, extract_text
 from server.validator import validate_json_schema
-from server.constants import PROMPT_PREFIX
+from server.constants import PROMPT_PREFIX, TEMP_DIR
 
 
 class ExtractResponse(BaseModel):
@@ -64,7 +65,7 @@ def _make_prompt_template(
         (
             "human",
             "I need to extract troubleshooting information from "
-            "the following text: ```\n{text}\n```\n Output in a JSON.",
+            "the following text: ```\n{text}\n```\n Output in a JSON and return the relevent page number for each problem solution.",
         ),
     )
     return ChatPromptTemplate.from_messages(prompt_components)
@@ -100,9 +101,9 @@ async def extract_from_pdf(
     model_name: Optional[str],
     json_schema: Optional[Dict[str, Any]] = None,
 ) -> ExtractResponse:
-    # output_pdf = str(uuid4()) + ".pdf"
-    output_pdf = "temp_ocr.pdf"
-    # perform_ocr(file, output_pdf)
+    output_pdf = os.path.join(TEMP_DIR, str(uuid4()) + ".pdf")
+    # output_pdf = "temp_ocr.pdf"
+    perform_ocr(file, output_pdf)
     if model_name is None:
         model_name = DEFAULT_MODEL
 
@@ -110,6 +111,10 @@ async def extract_from_pdf(
     extract_response = await extraction_runnable.ainvoke(
         ExtractRequest(text=text, json_schema=json_schema, model_name=model_name)
     )
+    print(extract_response)
+    print(type(extract_response))
+    if isinstance(extract_response, dict):
+        extract_response = [extract_response]
     response = ExtractResponse(data=extract_response)
     print(extract_response)
     print(type(response))
