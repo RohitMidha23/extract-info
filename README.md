@@ -98,6 +98,13 @@ However, this doesn't work very well in our case cause the AI model is not train
 
 Following are methods evaluated for OCR:
 
+#### DocTR
+
+DocTR is slower than libraries like OCRMyPDF but it performs much better in terms of OCR accuracy.
+The models chosen for detection and recognition run on a torch backend and hence without a GPU, take time to run.
+
+The increase in accuracy is however, significant enough to warrant it's use.
+
 #### Amazon Textract
 
 Not as useful here and output quality is not as good.
@@ -110,7 +117,19 @@ Performs exceptionally well but hasn't been integrated here due to cost. If the 
 
 1. OCRMyPDF
 
-This works best as it actually does OCR and this is what we use to save out on costs.
+This works best among off the bat PDF Libraries as it actually does OCR and you can use this to save time. It is faster than DocTR.
+
+To shift to OCRMyPDF, change
+
+```python
+from server.doctr_utils import perform_ocr, extract_text
+```
+
+to
+
+```python
+from server.pdf_utils import perform_ocr, extract_text
+```
 
 2. PDF Plumber
 
