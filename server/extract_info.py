@@ -13,6 +13,7 @@ from pydantic import BaseModel, Field, validator
 from server.models import get_model, DEFAULT_MODEL
 from server.pdf_utils import extract_text, perform_ocr
 from server.validator import validate_json_schema
+from server.constants import PROMPT_PREFIX
 
 
 class ExtractResponse(BaseModel):
@@ -52,15 +53,7 @@ def _make_prompt_template(
     instructions: Optional[str],
 ) -> ChatPromptTemplate:
     """Make a system message from instructions and examples."""
-    prefix = (
-        "You are a top-tier algorithm for extracting information from text obtained from OCR run on older PDFs. "
-        "This means the data might contain a lot of errors and could even not include the word Troubleshooting explicitly."
-        "Only extract information that is relevant to troubleshooting."
-        "Output the information with all the relevant fields (for example the column names in a table)."
-        "Make sure to output the page number on which the extracted text is found."
-        "If no information is relevant, use the schema and output "
-        "an empty list where appropriate."
-    )
+    prefix = PROMPT_PREFIX
     if instructions:
         system_message = ("system", f"{prefix}\n\n{instructions}")
     else:
