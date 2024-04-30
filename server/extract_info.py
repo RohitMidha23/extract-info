@@ -13,7 +13,6 @@ from pydantic import BaseModel, Field, validator
 
 from server.models import get_model, DEFAULT_MODEL
 from server.doctr_utils import perform_ocr, extract_text
-from server.validator import validate_json_schema
 from server.constants import PROMPT_PREFIX, TEMP_DIR
 
 
@@ -30,24 +29,11 @@ class ExtractRequest(CustomUserType):
     """Request body for the extract endpoint."""
 
     text: str = Field(..., description="The text to extract from.")
-    json_schema: Optional[Dict[str, Any]] = Field(
-        None,
-        description="JSON schema that describes what content should be extracted "
-        "from the text.",
-    )
     instructions: Optional[str] = Field(
         None, description="Supplemental system instructions."
     )
 
     model_name: Optional[str] = Field("gpt-3.5-turbo", description="Chat model to use.")
-    if json_schema:
-
-        @validator("json_schema")
-        def validate_schema(cls, v: Any) -> Dict[str, Any]:
-            """Validate the schema."""
-            if v is not None:
-                validate_json_schema(v)
-            return v
 
 
 def _make_prompt_template(
@@ -74,24 +60,13 @@ def _make_prompt_template(
 @chain
 async def extraction_runnable(extraction_request: ExtractRequest) -> ExtractResponse:
     """An end point to extract content from a given text object."""
-    schema = extraction_request.json_schema
-    if schema:
-        try:
-            Draft202012Validator.check_schema(schema)
-        except exceptions.ValidationError as e:
-            raise HTTPException(status_code=422, detail=f"Invalid schema: {e.message}")
 
     prompt = _make_prompt_template(
         extraction_request.instructions,
     )
     model = get_model(extraction_request.model_name)
     parser = JsonOutputParser()
-    if schema:
-        runnable = (prompt | model.with_structured_output(schema=schema)).with_config(
-            {"run_name": "extraction"}
-        )
-    else:
-        runnable = (prompt | model).with_config({"run_name": "extraction"}) | parser
+    runnable = (prompt | model).with_config({"run_name": "extraction"}) | parser
 
     return await runnable.ainvoke({"text": extraction_request.text})
 
@@ -99,7 +74,6 @@ async def extraction_runnable(extraction_request: ExtractRequest) -> ExtractResp
 async def extract_from_pdf(
     file: str,
     model_name: Optional[str],
-    json_schema: Optional[Dict[str, Any]] = None,
 ) -> ExtractResponse:
     output_pdf = os.path.join(TEMP_DIR, str(uuid4()) + ".pdf")
     # output_pdf = "temp_ocr.pdf"
@@ -109,7 +83,7 @@ async def extract_from_pdf(
 
     text = extract_text(output_pdf)
     extract_response = await extraction_runnable.ainvoke(
-        ExtractRequest(text=text, json_schema=json_schema, model_name=model_name)
+        ExtractRequest(text=text, model_name=model_name)
     )
     print(extract_response)
     print(type(extract_response))

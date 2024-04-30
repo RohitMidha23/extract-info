@@ -19,7 +19,6 @@ async def extract(
     *,
     file: UploadFile = File(None),
     model_name: Optional[str] = Form(DEFAULT_MODEL),
-    json_schema: Optional[Dict[str, Any]] = Form(None),
 ) -> ExtractResponse:
     """
     Extract structured data from text.
@@ -33,6 +32,4 @@ async def extract(
         temp.write(contents)
 
     print(temp_path)
-    return await extract_from_pdf(
-        file=temp_path, model_name=model_name, json_schema=json_schema
-    )
+    return await extract_from_pdf(file=temp_path, model_name=model_name)
