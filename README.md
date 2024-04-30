@@ -6,6 +6,19 @@ The primary issue that is noted is that many of these documents can't be directl
 
 OCR is, in fact, the most pivotal requirement here and a lot of the output quality depends solely on how well OCR is performing on the PDF.
 
+## Installation
+
+```bash
+pip install -r requirements.txt
+apt install ocrmypdf
+```
+
+To run:
+
+```
+uvicorn server.app:app --host 0.0.0.0 --port 8000 --reload
+```
+
 ## Brief Process
 
 Step 1. OCR is used at first to be able to create some readable text. This is a very important step, as most scanned documents might not contain text in the normal form that is parseable by simple PDF Parsers.
