@@ -1,13 +1,10 @@
 import os
 from typing import Optional
-from dotenv import load_dotenv
-
-load_dotenv()
 
 from langchain_openai import ChatOpenAI
 from langchain_core.language_models.chat_models import BaseChatModel
 
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+from constants import OPENAI_API_KEY
 
 
 def get_supported_models():
