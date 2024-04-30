@@ -86,6 +86,12 @@ def main():
 
 ```
 
+### LDMSuperResolution
+
+`LDMSuperResolution` is a diffusers model that does super resolution on images. It can be accessed quite easily through `LDMSuperResolutionPipeline` from the `diffusers` package.
+
+However, this doesn't work very well in our case cause the AI model is not trained for text documents and hence the output is garbled.
+
 ## Evaluations
 
 ### OCR
