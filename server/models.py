@@ -4,7 +4,7 @@ from typing import Optional
 from langchain_openai import ChatOpenAI
 from langchain_core.language_models.chat_models import BaseChatModel
 
-from constants import OPENAI_API_KEY
+from server.constants import OPENAI_API_KEY
 
 
 def get_supported_models():

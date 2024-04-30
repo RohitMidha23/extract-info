@@ -1,10 +1,15 @@
 #!/usr/bin/env python
 import sys
-import numpy as np
+import os
+
+sys.path.append("server/DE_GAN")
+sys.path.append(os.getcwd())
+
 import matplotlib.pyplot as plt
+import numpy as np
+from models.models import *
 from PIL import Image
 from utils import *
-from models.models import *
 
 input_size = (256, 256, 1)
 
