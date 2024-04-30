@@ -85,11 +85,7 @@ async def extract_from_pdf(
     extract_response = await extraction_runnable.ainvoke(
         ExtractRequest(text=text, model_name=model_name)
     )
-    print(extract_response)
-    print(type(extract_response))
     if isinstance(extract_response, dict):
         extract_response = [extract_response]
     response = ExtractResponse(data=extract_response)
-    print(extract_response)
-    print(type(response))
     return response

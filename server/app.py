@@ -23,7 +23,6 @@ app = FastAPI(
 
 
 ROOT = Path(__file__).parent.parent
-print(ROOT)
 
 ORIGINS = os.environ.get("CORS_ORIGINS", "").split(",")
 

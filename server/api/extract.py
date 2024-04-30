@@ -31,5 +31,4 @@ async def extract(
         contents = await file.read()
         temp.write(contents)
 
-    print(temp_path)
     return await extract_from_pdf(file=temp_path, model_name=model_name)
