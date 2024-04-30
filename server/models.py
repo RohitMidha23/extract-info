@@ -29,7 +29,7 @@ def get_supported_models():
 
 
 SUPPORTED_MODELS = get_supported_models()
-DEFAULT_MODEL = "gpt-3.5-turbo"
+DEFAULT_MODEL = "gpt-4-turbo"
 
 
 def get_model(model_name: Optional[str] = None) -> BaseChatModel:
