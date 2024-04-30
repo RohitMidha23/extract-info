@@ -11,7 +11,10 @@ OCR is, in fact, the most pivotal requirement here and a lot of the output quali
 ```bash
 pip install -r requirements.txt
 apt install ocrmypdf
+cp server/.env.sample server/.env
 ```
+
+Please add your OPENAI API Key in `server/.env`.
 
 To run:
 
